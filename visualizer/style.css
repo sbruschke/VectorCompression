@@ -455,7 +455,8 @@ body.dark-mode .info-panel h4,
 body.dark-mode .char-vector,
 body.dark-mode .char-vector strong,
 body.dark-mode .stats strong,
-body.dark-mode .stats p {
+body.dark-mode .stats p,
+body.dark-mode #resultantVector {
     color: #e0e0e0;
 }
 

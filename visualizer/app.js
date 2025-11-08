@@ -299,11 +299,16 @@ async function visualizeWord(input) {
         const charVectors = wordData.vectors;
         const totalWords = allWordVectors.length;
 
+        // Check if dark mode is enabled
+        const isDarkMode = document.body.classList.contains('dark-mode');
+
         // Calculate color based on word position (for layered words) or character position
         let vectorColor;
         if (layerWords && totalWords > 1) {
-            // Gradient based on word index (word 1 is redder, last word is blacker)
-            const lightness = Math.floor(50 - (wordIndex / (totalWords - 1)) * 50);
+            // Gradient: red to black (light mode) or red to white (dark mode)
+            const lightness = isDarkMode ?
+                Math.floor(50 + (wordIndex / (totalWords - 1)) * 50) : // 50% to 100% for dark mode
+                Math.floor(50 - (wordIndex / (totalWords - 1)) * 50);  // 50% to 0% for light mode
             vectorColor = `hsl(0, 100%, ${lightness}%)`;
         }
 
@@ -314,8 +319,16 @@ async function visualizeWord(input) {
 
                 if (showIndividual) {
                     // Use word-based color for layered words, character-based for single words
-                    const color = layerWords && totalWords > 1 ? vectorColor :
-                        `hsl(0, 100%, ${Math.floor(50 - (i / charVectors.length) * 50)}%)`;
+                    let color;
+                    if (layerWords && totalWords > 1) {
+                        color = vectorColor;
+                    } else {
+                        // Gradient for single word: red to black (light) or red to white (dark)
+                        const lightness = isDarkMode ?
+                            Math.floor(50 + (i / charVectors.length) * 50) : // 50% to 100% for dark mode
+                            Math.floor(50 - (i / charVectors.length) * 50);  // 50% to 0% for light mode
+                        color = `hsl(0, 100%, ${lightness}%)`;
+                    }
 
                     const arrow = createVectorArrow(
                         charVectors[i].start,
@@ -331,8 +344,16 @@ async function visualizeWord(input) {
             charVectors.forEach((cv, i) => {
                 if (showIndividual) {
                     // Use word-based color for layered words, character-based for single words
-                    const color = layerWords && totalWords > 1 ? vectorColor :
-                        `hsl(0, 100%, ${Math.floor(50 - (i / charVectors.length) * 50)}%)`;
+                    let color;
+                    if (layerWords && totalWords > 1) {
+                        color = vectorColor;
+                    } else {
+                        // Gradient for single word: red to black (light) or red to white (dark)
+                        const lightness = isDarkMode ?
+                            Math.floor(50 + (i / charVectors.length) * 50) : // 50% to 100% for dark mode
+                            Math.floor(50 - (i / charVectors.length) * 50);  // 50% to 0% for light mode
+                        color = `hsl(0, 100%, ${lightness}%)`;
+                    }
 
                     const arrow = createVectorArrow(cv.start, cv.end, color, 0.7);
                     scene.add(arrow);
