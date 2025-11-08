@@ -196,10 +196,10 @@ function createVectorArrow(start, end, color, opacity = 1) {
         length * 0.1
     );
 
-    arrowHelper.line.material.opacity = opacity;
-    arrowHelper.line.material.transparent = true;
-    arrowHelper.cone.material.opacity = opacity;
-    arrowHelper.cone.material.transparent = true;
+    arrowHelper.line.material.opacity = 1.0;
+    arrowHelper.line.material.transparent = false;
+    arrowHelper.cone.material.opacity = 1.0;
+    arrowHelper.cone.material.transparent = false;
 
     return arrowHelper;
 }
