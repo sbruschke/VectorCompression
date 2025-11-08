@@ -408,10 +408,13 @@ body.dark-mode .options label {
     color: #e0e0e0;
 }
 
-body.dark-mode #wordInput,
-body.dark-mode button {
+body.dark-mode #wordInput {
     border-color: #e0e0e0;
     color: #e0e0e0;
+}
+
+body.dark-mode button {
+    border-color: #e0e0e0;
 }
 
 body.dark-mode #visualizeBtn {
@@ -423,13 +426,18 @@ body.dark-mode #visualizeBtn:hover {
     background: #fff;
 }
 
+body.dark-mode #clearBtn {
+    background: transparent;
+    color: #e0e0e0;
+}
+
 body.dark-mode #clearBtn:hover {
     background: rgba(255, 255, 255, 0.05);
 }
 
 body.dark-mode .dark-mode-toggle input[type="checkbox"],
 body.dark-mode .options input[type="checkbox"] {
-    border-color: #e0e0e0;
+    border: none;
 }
 
 body.dark-mode .dark-mode-toggle input[type="checkbox"]::before,
