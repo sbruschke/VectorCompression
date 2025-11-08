@@ -299,15 +299,24 @@ async function visualizeWord(input) {
         const charVectors = wordData.vectors;
         const totalWords = allWordVectors.length;
 
+        // Calculate color based on word position (for layered words) or character position
+        let vectorColor;
+        if (layerWords && totalWords > 1) {
+            // Gradient based on word index (word 1 is redder, last word is blacker)
+            const lightness = Math.floor(50 - (wordIndex / (totalWords - 1)) * 50);
+            vectorColor = `hsl(0, 100%, ${lightness}%)`;
+        }
+
         // Animate or show all at once
         if (animate && charVectors.length > 0) {
             for (let i = 0; i < charVectors.length; i++) {
                 await new Promise(resolve => setTimeout(resolve, 300));
 
                 if (showIndividual) {
-                    // Red to black gradient (hue 0 = red, lightness from 50% to 0%)
-                    const lightness = Math.floor(50 - (i / charVectors.length) * 50);
-                    const color = `hsl(0, 100%, ${lightness}%)`;
+                    // Use word-based color for layered words, character-based for single words
+                    const color = layerWords && totalWords > 1 ? vectorColor :
+                        `hsl(0, 100%, ${Math.floor(50 - (i / charVectors.length) * 50)}%)`;
+
                     const arrow = createVectorArrow(
                         charVectors[i].start,
                         charVectors[i].end,
@@ -316,25 +325,18 @@ async function visualizeWord(input) {
                     );
                     scene.add(arrow);
                     vectorObjects.push(arrow);
-
-                    const sphere = createSphere(charVectors[i].end, color, 0.4);
-                    scene.add(sphere);
-                    vectorObjects.push(sphere);
                 }
             }
         } else {
             charVectors.forEach((cv, i) => {
                 if (showIndividual) {
-                    // Red to black gradient (hue 0 = red, lightness from 50% to 0%)
-                    const lightness = Math.floor(50 - (i / charVectors.length) * 50);
-                    const color = `hsl(0, 100%, ${lightness}%)`;
+                    // Use word-based color for layered words, character-based for single words
+                    const color = layerWords && totalWords > 1 ? vectorColor :
+                        `hsl(0, 100%, ${Math.floor(50 - (i / charVectors.length) * 50)}%)`;
+
                     const arrow = createVectorArrow(cv.start, cv.end, color, 0.7);
                     scene.add(arrow);
                     vectorObjects.push(arrow);
-
-                    const sphere = createSphere(cv.end, color, 0.4);
-                    scene.add(sphere);
-                    vectorObjects.push(sphere);
                 }
             });
         }
@@ -344,18 +346,13 @@ async function visualizeWord(input) {
             const resultant = charVectors[charVectors.length - 1].end;
             const startPoint = layerWords ? [0, 0, 0] : (wordIndex > 0 ? allWordVectors[wordIndex - 1].resultant : [0, 0, 0]);
 
-            // Use different golden shades for layered words
-            const goldenHue = layerWords && totalWords > 1 ? 40 + (wordIndex / totalWords) * 15 : 45;
-            const goldenColor = `hsl(${goldenHue}, 100%, 50%)`;
+            // Always use golden color for resultant vectors
+            const goldenColor = 0xFFD700;
 
             const resultantArrow = createVectorArrow(startPoint, resultant, goldenColor, 1);
             resultantArrow.line.material.linewidth = 3;
             scene.add(resultantArrow);
             vectorObjects.push(resultantArrow);
-
-            const resultantSphere = createSphere(resultant, goldenColor, 0.8);
-            scene.add(resultantSphere);
-            vectorObjects.push(resultantSphere);
         }
     }
 
