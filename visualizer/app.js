@@ -220,115 +220,159 @@ function createSphere(position, color, size = 0.5) {
 }
 
 // Visualize word as vector sum
-async function visualizeWord(word) {
+async function visualizeWord(input) {
     clearVectors();
 
-    if (!word) {
+    if (!input) {
         updateVectorInfo('Please enter a word');
         return;
     }
 
     const animate = document.getElementById('animateAddition').checked;
     const showIndividual = document.getElementById('showVectors').checked;
+    const layerWords = document.getElementById('layerWords').checked;
 
-    let currentPos = [0, 0, 0];
     let vectorInfoHTML = '';
-    const charVectors = [];
+    const allWordVectors = [];
 
-    // Calculate all character vectors
-    for (let i = 0; i < word.length; i++) {
-        const char = word[i];
-        const vector = BASE_VECTORS[char];
+    // Split by spaces if layering words
+    const words = layerWords ? input.split(/\s+/).filter(w => w.length > 0) : [input];
 
-        if (!vector) {
-            vectorInfoHTML += `<div class="char-vector" style="border-left-color: #ff6b6b;">
-                <strong>${char}</strong> No vector mapping found
+    // Process each word
+    for (let wordIndex = 0; wordIndex < words.length; wordIndex++) {
+        const word = words[wordIndex];
+        let currentPos = layerWords ? [0, 0, 0] : (wordIndex > 0 ? allWordVectors[wordIndex - 1].resultant : [0, 0, 0]);
+        const charVectors = [];
+
+        if (layerWords && words.length > 1) {
+            vectorInfoHTML += `<div class="char-vector" style="border-left-color: #FFD700; font-weight: bold;">
+                <strong>Word ${wordIndex + 1}:</strong> "${word}"
             </div>`;
-            continue;
         }
 
-        const nextPos = [
-            currentPos[0] + vector[0],
-            currentPos[1] + vector[1],
-            currentPos[2] + vector[2]
-        ];
+        // Calculate all character vectors for this word
+        for (let i = 0; i < word.length; i++) {
+            const char = word[i];
+            const vector = BASE_VECTORS[char];
 
-        charVectors.push({
-            char: char,
-            start: [...currentPos],
-            end: [...nextPos],
-            vector: vector
+            if (!vector) {
+                vectorInfoHTML += `<div class="char-vector" style="border-left-color: #ff6b6b;">
+                    <strong>${char}</strong> No vector mapping found
+                </div>`;
+                continue;
+            }
+
+            const nextPos = [
+                currentPos[0] + vector[0],
+                currentPos[1] + vector[1],
+                currentPos[2] + vector[2]
+            ];
+
+            charVectors.push({
+                char: char,
+                start: [...currentPos],
+                end: [...nextPos],
+                vector: vector,
+                wordIndex: wordIndex
+            });
+
+            currentPos = nextPos;
+
+            vectorInfoHTML += `<div class="char-vector">
+                <strong>${char}</strong>
+                [${vector[0].toFixed(2)}, ${vector[1].toFixed(2)}, ${vector[2].toFixed(2)}]
+            </div>`;
+        }
+
+        allWordVectors.push({
+            word: word,
+            vectors: charVectors,
+            resultant: currentPos
         });
-
-        currentPos = nextPos;
-
-        vectorInfoHTML += `<div class="char-vector">
-            <strong>${char}</strong>
-            [${vector[0].toFixed(2)}, ${vector[1].toFixed(2)}, ${vector[2].toFixed(2)}]
-        </div>`;
     }
 
     updateVectorInfo(vectorInfoHTML);
 
-    // Animate or show all at once
-    if (animate && charVectors.length > 0) {
-        for (let i = 0; i < charVectors.length; i++) {
-            await new Promise(resolve => setTimeout(resolve, 300));
+    // Render all words
+    for (let wordIndex = 0; wordIndex < allWordVectors.length; wordIndex++) {
+        const wordData = allWordVectors[wordIndex];
+        const charVectors = wordData.vectors;
+        const totalWords = allWordVectors.length;
 
-            if (showIndividual) {
-                // Red to black gradient (hue 0 = red, lightness from 50% to 0%)
-                const lightness = Math.floor(50 - (i / charVectors.length) * 50);
-                const color = `hsl(0, 100%, ${lightness}%)`;
-                const arrow = createVectorArrow(
-                    charVectors[i].start,
-                    charVectors[i].end,
-                    color,
-                    0.7
-                );
-                scene.add(arrow);
-                vectorObjects.push(arrow);
+        // Animate or show all at once
+        if (animate && charVectors.length > 0) {
+            for (let i = 0; i < charVectors.length; i++) {
+                await new Promise(resolve => setTimeout(resolve, 300));
 
-                const sphere = createSphere(charVectors[i].end, color, 0.4);
-                scene.add(sphere);
-                vectorObjects.push(sphere);
+                if (showIndividual) {
+                    // Red to black gradient (hue 0 = red, lightness from 50% to 0%)
+                    const lightness = Math.floor(50 - (i / charVectors.length) * 50);
+                    const color = `hsl(0, 100%, ${lightness}%)`;
+                    const arrow = createVectorArrow(
+                        charVectors[i].start,
+                        charVectors[i].end,
+                        color,
+                        0.7
+                    );
+                    scene.add(arrow);
+                    vectorObjects.push(arrow);
+
+                    const sphere = createSphere(charVectors[i].end, color, 0.4);
+                    scene.add(sphere);
+                    vectorObjects.push(sphere);
+                }
             }
+        } else {
+            charVectors.forEach((cv, i) => {
+                if (showIndividual) {
+                    // Red to black gradient (hue 0 = red, lightness from 50% to 0%)
+                    const lightness = Math.floor(50 - (i / charVectors.length) * 50);
+                    const color = `hsl(0, 100%, ${lightness}%)`;
+                    const arrow = createVectorArrow(cv.start, cv.end, color, 0.7);
+                    scene.add(arrow);
+                    vectorObjects.push(arrow);
+
+                    const sphere = createSphere(cv.end, color, 0.4);
+                    scene.add(sphere);
+                    vectorObjects.push(sphere);
+                }
+            });
         }
-    } else {
-        charVectors.forEach((cv, i) => {
-            if (showIndividual) {
-                // Red to black gradient (hue 0 = red, lightness from 50% to 0%)
-                const lightness = Math.floor(50 - (i / charVectors.length) * 50);
-                const color = `hsl(0, 100%, ${lightness}%)`;
-                const arrow = createVectorArrow(cv.start, cv.end, color, 0.7);
-                scene.add(arrow);
-                vectorObjects.push(arrow);
 
-                const sphere = createSphere(cv.end, color, 0.4);
-                scene.add(sphere);
-                vectorObjects.push(sphere);
-            }
-        });
+        // Show resultant vector for each word (golden color)
+        if (charVectors.length > 0) {
+            const resultant = charVectors[charVectors.length - 1].end;
+            const startPoint = layerWords ? [0, 0, 0] : (wordIndex > 0 ? allWordVectors[wordIndex - 1].resultant : [0, 0, 0]);
+
+            // Use different golden shades for layered words
+            const goldenHue = layerWords && totalWords > 1 ? 40 + (wordIndex / totalWords) * 15 : 45;
+            const goldenColor = `hsl(${goldenHue}, 100%, 50%)`;
+
+            const resultantArrow = createVectorArrow(startPoint, resultant, goldenColor, 1);
+            resultantArrow.line.material.linewidth = 3;
+            scene.add(resultantArrow);
+            vectorObjects.push(resultantArrow);
+
+            const resultantSphere = createSphere(resultant, goldenColor, 0.8);
+            scene.add(resultantSphere);
+            vectorObjects.push(resultantSphere);
+        }
     }
 
-    // Show resultant vector (golden color)
-    if (charVectors.length > 0) {
-        const resultant = charVectors[charVectors.length - 1].end;
-        const resultantArrow = createVectorArrow([0, 0, 0], resultant, 0xFFD700, 1);
-        resultantArrow.line.material.linewidth = 3;
-        scene.add(resultantArrow);
-        vectorObjects.push(resultantArrow);
-
-        const resultantSphere = createSphere(resultant, 0xFFD700, 0.8);
-        scene.add(resultantSphere);
-        vectorObjects.push(resultantSphere);
-
-        // Update stats
+    // Update stats with final resultant
+    if (allWordVectors.length > 0) {
+        const lastWord = allWordVectors[allWordVectors.length - 1];
+        const resultant = lastWord.resultant;
         const magnitude = Math.sqrt(
             resultant[0] ** 2 + resultant[1] ** 2 + resultant[2] ** 2
         );
 
-        document.getElementById('currentWord').textContent = word;
-        document.getElementById('charCount').textContent = charVectors.length;
+        const displayText = layerWords && words.length > 1 ?
+            `${words.length} words (layered)` : input;
+        const charCount = allWordVectors.reduce((sum, w) => sum + w.vectors.length, 0);
+
+        document.getElementById('currentWord').textContent = displayText;
+        document.getElementById('charCount').textContent = charCount;
         document.getElementById('resultantVector').textContent =
             `[${resultant[0].toFixed(2)}, ${resultant[1].toFixed(2)}, ${resultant[2].toFixed(2)}]`;
         document.getElementById('magnitude').textContent = magnitude.toFixed(2);
@@ -380,6 +424,11 @@ document.getElementById('showVectors').addEventListener('change', () => {
 });
 
 document.getElementById('animateAddition').addEventListener('change', () => {
+    const word = document.getElementById('wordInput').value;
+    if (word) visualizeWord(word);
+});
+
+document.getElementById('layerWords').addEventListener('change', () => {
     const word = document.getElementById('wordInput').value;
     if (word) visualizeWord(word);
 });
