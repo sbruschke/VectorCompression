@@ -341,9 +341,9 @@ async function visualizeWord(input) {
             });
         }
 
-        // Show resultant vector for each word (golden color)
+        // Show resultant vector for each word
         if (charVectors.length > 0) {
-            const resultant = charVectors[charVectors.length - 1].end;
+            const resultant = wordData.resultant;
             const startPoint = layerWords ? [0, 0, 0] : (wordIndex > 0 ? allWordVectors[wordIndex - 1].resultant : [0, 0, 0]);
 
             // Always use golden color for resultant vectors
@@ -353,6 +353,8 @@ async function visualizeWord(input) {
             resultantArrow.line.material.linewidth = 3;
             scene.add(resultantArrow);
             vectorObjects.push(resultantArrow);
+
+            console.log(`Word ${wordIndex + 1}: Resultant vector from [${startPoint}] to [${resultant}]`);
         }
     }
 
