@@ -398,96 +398,11 @@ async function visualizeWord(input) {
         document.getElementById('resultantVector').textContent =
             `[${resultant[0].toFixed(2)}, ${resultant[1].toFixed(2)}, ${resultant[2].toFixed(2)}]`;
         document.getElementById('magnitude').textContent = magnitude.toFixed(2);
-
-        // Auto-frame camera to fit all vectors
-        autoFrameCamera(allWordVectors);
     }
 }
 
 function updateVectorInfo(html) {
     document.getElementById('vectorInfo').innerHTML = html;
-}
-
-// Auto-frame camera to fit all vectors in view
-function autoFrameCamera(allWordVectors) {
-    if (allWordVectors.length === 0) return;
-
-    // Calculate bounding box of all vectors
-    let minX = 0, minY = 0, minZ = 0;
-    let maxX = 0, maxY = 0, maxZ = 0;
-
-    // Include origin
-    minX = maxX = 0;
-    minY = maxY = 0;
-    minZ = maxZ = 0;
-
-    // Check all vector endpoints
-    allWordVectors.forEach(wordData => {
-        wordData.vectors.forEach(cv => {
-            minX = Math.min(minX, cv.start[0], cv.end[0]);
-            minY = Math.min(minY, cv.start[1], cv.end[1]);
-            minZ = Math.min(minZ, cv.start[2], cv.end[2]);
-            maxX = Math.max(maxX, cv.start[0], cv.end[0]);
-            maxY = Math.max(maxY, cv.start[1], cv.end[1]);
-            maxZ = Math.max(maxZ, cv.start[2], cv.end[2]);
-        });
-
-        // Include resultant endpoints
-        const resultant = wordData.resultant;
-        minX = Math.min(minX, resultant[0]);
-        minY = Math.min(minY, resultant[1]);
-        minZ = Math.min(minZ, resultant[2]);
-        maxX = Math.max(maxX, resultant[0]);
-        maxY = Math.max(maxY, resultant[1]);
-        maxZ = Math.max(maxZ, resultant[2]);
-    });
-
-    // Calculate center and size of bounding box
-    const centerX = (minX + maxX) / 2;
-    const centerY = (minY + maxY) / 2;
-    const centerZ = (minZ + maxZ) / 2;
-
-    const sizeX = maxX - minX;
-    const sizeY = maxY - minY;
-    const sizeZ = maxZ - minZ;
-
-    // Calculate areas of the three planes
-    const areaXY = sizeX * sizeY; // Looking from Z axis
-    const areaXZ = sizeX * sizeZ; // Looking from Y axis
-    const areaYZ = sizeY * sizeZ; // Looking from X axis
-
-    // Find which plane has the largest area (most spread)
-    let cameraOffset = { x: 0, y: 0, z: 0 };
-    let maxDimension = 0;
-
-    if (areaXY >= areaXZ && areaXY >= areaYZ) {
-        // XY plane is largest - look from Z axis
-        maxDimension = Math.max(sizeX, sizeY);
-        cameraOffset = { x: 0, y: 0, z: 1 };
-    } else if (areaXZ >= areaXY && areaXZ >= areaYZ) {
-        // XZ plane is largest - look from Y axis
-        maxDimension = Math.max(sizeX, sizeZ);
-        cameraOffset = { x: 0, y: 1, z: 0 };
-    } else {
-        // YZ plane is largest - look from X axis
-        maxDimension = Math.max(sizeY, sizeZ);
-        cameraOffset = { x: 1, y: 0, z: 0 };
-    }
-
-    // Calculate optimal camera distance based on largest dimension
-    const fov = camera.fov * (Math.PI / 180); // Convert to radians
-    const distance = (maxDimension / 2) / Math.tan(fov / 2) * 1.5; // 1.5 for padding
-
-    // Position camera perpendicular to largest plane
-    camera.position.set(
-        centerX + cameraOffset.x * distance,
-        centerY + cameraOffset.y * distance,
-        centerZ + cameraOffset.z * distance
-    );
-
-    // Point camera at center of bounding box
-    controls.target.set(centerX, centerY, centerZ);
-    controls.update();
 }
 
 // Event Listeners
