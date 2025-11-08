@@ -36,6 +36,56 @@ header {
     position: relative;
 }
 
+.dark-mode-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.9em;
+}
+
+.dark-mode-toggle input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border: 2px solid #1a1a1a;
+    position: relative;
+    background: transparent;
+}
+
+.dark-mode-toggle input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border: 2px solid #1a1a1a;
+    border-radius: 50%;
+    opacity: 0.4;
+}
+
+.dark-mode-toggle input[type="checkbox"]:checked::before {
+    content: '×';
+    font-size: 20px;
+    line-height: 14px;
+    font-weight: bold;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 0;
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 header::before {
     content: '';
     position: absolute;
@@ -332,4 +382,100 @@ footer {
         flex-direction: column;
         gap: 10px;
     }
+}
+
+/* Dark Mode */
+body.dark-mode {
+    background: url('darkSMALLtileablepapertexture.png') repeat;
+    color: #e0e0e0;
+}
+
+body.dark-mode header,
+body.dark-mode .controls,
+body.dark-mode #canvas-container,
+body.dark-mode .info-panel {
+    border-color: #e0e0e0;
+}
+
+body.dark-mode header::before {
+    border-color: #e0e0e0;
+}
+
+body.dark-mode header h1,
+body.dark-mode .subtitle,
+body.dark-mode .dark-mode-toggle,
+body.dark-mode .options label {
+    color: #e0e0e0;
+}
+
+body.dark-mode #wordInput,
+body.dark-mode button {
+    border-color: #e0e0e0;
+    color: #e0e0e0;
+}
+
+body.dark-mode #visualizeBtn {
+    background: #e0e0e0;
+    color: #1a1a1a;
+}
+
+body.dark-mode #visualizeBtn:hover {
+    background: #fff;
+}
+
+body.dark-mode #clearBtn:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .dark-mode-toggle input[type="checkbox"],
+body.dark-mode .options input[type="checkbox"] {
+    border-color: #e0e0e0;
+}
+
+body.dark-mode .dark-mode-toggle input[type="checkbox"]::before,
+body.dark-mode .options input[type="checkbox"]::before {
+    border-color: #e0e0e0;
+    color: #e0e0e0;
+}
+
+body.dark-mode .info-panel h3 {
+    border-bottom-color: #e0e0e0;
+    color: #e0e0e0;
+}
+
+body.dark-mode .info-panel h4,
+body.dark-mode .char-vector,
+body.dark-mode .char-vector strong,
+body.dark-mode .stats strong,
+body.dark-mode .stats p {
+    color: #e0e0e0;
+}
+
+body.dark-mode .char-vector {
+    border-left-color: #e0e0e0;
+}
+
+body.dark-mode .vector-display {
+    border-color: #e0e0e0;
+    color: #e0e0e0;
+}
+
+body.dark-mode footer {
+    color: #e0e0e0;
+}
+
+body.dark-mode .info-panel::-webkit-scrollbar-track {
+    border-left-color: #e0e0e0;
+}
+
+body.dark-mode .info-panel::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+}
+
+body.dark-mode .info-panel::-webkit-scrollbar-thumb:hover {
+    background: #fff;
+}
+
+body.dark-mode .help-text {
+    color: #999;
 }

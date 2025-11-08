@@ -434,5 +434,22 @@ document.getElementById('layerWords').addEventListener('change', () => {
     if (word) visualizeWord(word);
 });
 
+// Dark mode toggle
+document.getElementById('darkMode').addEventListener('change', (e) => {
+    if (e.target.checked) {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', 'enabled');
+    } else {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('darkMode', 'disabled');
+    }
+});
+
+// Load dark mode preference
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('darkMode').checked = true;
+}
+
 // Initialize on load
 window.addEventListener('load', initScene);
