@@ -30,7 +30,7 @@ header {
     color: #1a1a1a;
     margin-bottom: 30px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.9);
+    background: transparent;
     border: 2px solid #1a1a1a;
     border-radius: 0;
     position: relative;
@@ -62,12 +62,11 @@ header h1 {
 }
 
 .controls {
-    background: rgba(255, 255, 255, 0.9);
+    background: transparent;
     border: 2px solid #1a1a1a;
     border-radius: 0;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
 }
 
 .input-group {
@@ -85,13 +84,12 @@ header h1 {
     border-radius: 0;
     outline: none;
     transition: all 0.2s;
-    background: #f5f5f5;
+    background: transparent;
 }
 
 #wordInput:focus {
     border-color: #000;
-    background: white;
-    box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.1);
+    background: transparent;
 }
 
 button {
@@ -114,29 +112,23 @@ button {
 
 #visualizeBtn:hover {
     background: #000;
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
-    transform: translate(-2px, -2px);
 }
 
 #visualizeBtn:active {
-    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
-    transform: translate(0, 0);
+    transform: translate(1px, 1px);
 }
 
 #clearBtn {
-    background: white;
+    background: transparent;
     color: #1a1a1a;
 }
 
 #clearBtn:hover {
-    background: #f5f5f5;
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
-    transform: translate(-2px, -2px);
+    background: rgba(0, 0, 0, 0.05);
 }
 
 #clearBtn:active {
-    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
-    transform: translate(0, 0);
+    transform: translate(1px, 1px);
 }
 
 .options {
@@ -154,9 +146,43 @@ button {
 }
 
 .options input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
+    border: 2px solid #1a1a1a;
+    position: relative;
+    background: transparent;
+}
+
+/* Hand-drawn circle when unchecked */
+.options input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border: 2px solid #1a1a1a;
+    border-radius: 50%;
+    opacity: 0.4;
+}
+
+/* Hand-drawn X when checked */
+.options input[type="checkbox"]:checked::before {
+    content: '×';
+    font-size: 20px;
+    line-height: 14px;
+    font-weight: bold;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 0;
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .main-content {
@@ -169,18 +195,16 @@ button {
     background: transparent;
     border: 2px solid #1a1a1a;
     border-radius: 0;
-    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.1);
     overflow: hidden;
     position: relative;
     min-height: 600px;
 }
 
 .info-panel {
-    background: rgba(255, 255, 255, 0.9);
+    background: transparent;
     border: 2px solid #1a1a1a;
     border-radius: 0;
     padding: 20px;
-    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.1);
     max-height: 600px;
     overflow-y: auto;
 }
@@ -215,7 +239,7 @@ button {
 }
 
 .char-vector {
-    background: #f8f8f8;
+    background: transparent;
     padding: 10px;
     margin: 8px 0;
     border-radius: 0;
@@ -232,10 +256,10 @@ button {
 
 .vector-display {
     font-family: 'ShadowMono', 'Courier New', monospace;
-    background: #f5f5f5;
+    background: transparent;
     padding: 8px;
     border-radius: 0;
-    border: 1px solid #d0d0d0;
+    border: 1px solid #1a1a1a;
     margin: 5px 0;
     font-size: 0.9em;
 }
@@ -270,9 +294,9 @@ footer {
 }
 
 .info-panel::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: transparent;
     border-radius: 0;
-    border-left: 1px solid #d0d0d0;
+    border-left: 1px solid #1a1a1a;
 }
 
 .info-panel::-webkit-scrollbar-thumb {
