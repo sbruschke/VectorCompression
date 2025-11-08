@@ -344,17 +344,19 @@ async function visualizeWord(input) {
         // Show resultant vector for each word
         if (charVectors.length > 0) {
             const resultant = wordData.resultant;
+
+            // In layer mode, always start from origin; otherwise continue from previous word
             const startPoint = layerWords ? [0, 0, 0] : (wordIndex > 0 ? allWordVectors[wordIndex - 1].resultant : [0, 0, 0]);
 
             // Always use golden color for resultant vectors
             const goldenColor = 0xFFD700;
 
             const resultantArrow = createVectorArrow(startPoint, resultant, goldenColor, 1);
-            resultantArrow.line.material.linewidth = 3;
+            resultantArrow.line.material.linewidth = 4; // Thicker for visibility
             scene.add(resultantArrow);
             vectorObjects.push(resultantArrow);
 
-            console.log(`Word ${wordIndex + 1}: Resultant vector from [${startPoint}] to [${resultant}]`);
+            console.log(`Word ${wordIndex + 1} "${wordData.word}": Resultant [${resultant[0].toFixed(2)}, ${resultant[1].toFixed(2)}, ${resultant[2].toFixed(2)}]`);
         }
     }
 
