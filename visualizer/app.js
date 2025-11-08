@@ -464,6 +464,12 @@ document.getElementById('darkMode').addEventListener('change', (e) => {
         document.body.classList.remove('dark-mode');
         localStorage.setItem('darkMode', 'disabled');
     }
+
+    // Re-render vectors with new colors if there's a word visualized
+    const word = document.getElementById('wordInput').value;
+    if (word) {
+        visualizeWord(word);
+    }
 });
 
 // Load dark mode preference
