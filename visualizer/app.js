@@ -108,7 +108,7 @@ function initScene() {
 
     // Scene
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xffffff);
+    scene.background = null; // Transparent background
 
     // Camera
     camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
@@ -116,8 +116,9 @@ function initScene() {
     camera.lookAt(0, 0, 0);
 
     // Renderer
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
+    renderer.setClearColor(0x000000, 0); // Transparent background
     renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
 
@@ -275,8 +276,9 @@ async function visualizeWord(word) {
             await new Promise(resolve => setTimeout(resolve, 300));
 
             if (showIndividual) {
-                const grayValue = Math.floor(100 + (i / charVectors.length) * 80);
-                const color = `hsl(0, 0%, ${grayValue}%)`;
+                // Red to black gradient (hue 0 = red, lightness from 50% to 0%)
+                const lightness = Math.floor(50 - (i / charVectors.length) * 50);
+                const color = `hsl(0, 100%, ${lightness}%)`;
                 const arrow = createVectorArrow(
                     charVectors[i].start,
                     charVectors[i].end,
@@ -294,8 +296,9 @@ async function visualizeWord(word) {
     } else {
         charVectors.forEach((cv, i) => {
             if (showIndividual) {
-                const grayValue = Math.floor(100 + (i / charVectors.length) * 80);
-                const color = `hsl(0, 0%, ${grayValue}%)`;
+                // Red to black gradient (hue 0 = red, lightness from 50% to 0%)
+                const lightness = Math.floor(50 - (i / charVectors.length) * 50);
+                const color = `hsl(0, 100%, ${lightness}%)`;
                 const arrow = createVectorArrow(cv.start, cv.end, color, 0.7);
                 scene.add(arrow);
                 vectorObjects.push(arrow);
@@ -307,15 +310,15 @@ async function visualizeWord(word) {
         });
     }
 
-    // Show resultant vector
+    // Show resultant vector (golden color)
     if (charVectors.length > 0) {
         const resultant = charVectors[charVectors.length - 1].end;
-        const resultantArrow = createVectorArrow([0, 0, 0], resultant, 0x000000, 1);
+        const resultantArrow = createVectorArrow([0, 0, 0], resultant, 0xFFD700, 1);
         resultantArrow.line.material.linewidth = 3;
         scene.add(resultantArrow);
         vectorObjects.push(resultantArrow);
 
-        const resultantSphere = createSphere(resultant, 0x000000, 0.8);
+        const resultantSphere = createSphere(resultant, 0xFFD700, 0.8);
         scene.add(resultantSphere);
         vectorObjects.push(resultantSphere);
 

@@ -13,10 +13,8 @@
 
 body {
     font-family: 'ShadowMono', 'Courier New', monospace;
-    background: #e8e8e8;
-    background-image:
-        repeating-linear-gradient(0deg, transparent, transparent 35px, rgba(0,0,0,0.03) 35px, rgba(0,0,0,0.03) 36px),
-        repeating-linear-gradient(90deg, transparent, transparent 35px, rgba(0,0,0,0.03) 35px, rgba(0,0,0,0.03) 36px);
+    background: url('SMALLtileablepapertexture.png') repeat;
+    background-size: auto;
     min-height: 100vh;
     color: #1a1a1a;
 }
@@ -32,7 +30,7 @@ header {
     color: #1a1a1a;
     margin-bottom: 30px;
     padding: 20px;
-    background: white;
+    background: rgba(255, 255, 255, 0.9);
     border: 2px solid #1a1a1a;
     border-radius: 0;
     position: relative;
@@ -64,7 +62,7 @@ header h1 {
 }
 
 .controls {
-    background: white;
+    background: rgba(255, 255, 255, 0.9);
     border: 2px solid #1a1a1a;
     border-radius: 0;
     padding: 20px;
@@ -168,7 +166,7 @@ button {
 }
 
 #canvas-container {
-    background: white;
+    background: transparent;
     border: 2px solid #1a1a1a;
     border-radius: 0;
     box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.1);
@@ -178,7 +176,7 @@ button {
 }
 
 .info-panel {
-    background: white;
+    background: rgba(255, 255, 255, 0.9);
     border: 2px solid #1a1a1a;
     border-radius: 0;
     padding: 20px;
