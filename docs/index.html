@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector Compression Visualizer</title>
+    <link rel="icon" type="image/png" href="EmeraldFavicon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Vector Compression Visualizer</h1>
+            <p class="subtitle">Visualizing words through 3D vector addition</p>
+            <label class="dark-mode-toggle">
+                <input type="checkbox" id="darkMode">
+                Dark Mode
+            </label>
+        </header>
+
+        <div class="controls">
+            <div class="input-group">
+                <input type="text" id="wordInput" placeholder="Type a word or phrase..." autofocus>
+                <button id="visualizeBtn">Visualize</button>
+                <button id="clearBtn">Clear</button>
+            </div>
+
+            <div class="options">
+                <label>
+                    <input type="checkbox" id="showGrid" checked>
+                    Show Grid
+                </label>
+                <label>
+                    <input type="checkbox" id="showAxes" checked>
+                    Show Axes
+                </label>
+                <label>
+                    <input type="checkbox" id="showVectors" checked>
+                    Show Individual Vectors
+                </label>
+                <label>
+                    <input type="checkbox" id="animateAddition" checked>
+                    Animate Addition
+                </label>
+                <label>
+                    <input type="checkbox" id="layerWords">
+                    Layer Words
+                </label>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="canvas-container"></div>
+
+            <div class="info-panel">
+                <h3>Vector Information</h3>
+                <div id="vectorInfo">
+                    <p class="help-text">Enter a word to see its vector representation</p>
+                </div>
+
+                <div class="stats">
+                    <h4>Current Word</h4>
+                    <div id="wordStats">
+                        <p><strong>Word:</strong> <span id="currentWord">-</span></p>
+                        <p><strong>Characters:</strong> <span id="charCount">0</span></p>
+                        <p><strong>Resultant Vector:</strong></p>
+                        <p id="resultantVector" class="vector-display">-</p>
+                        <p><strong>Magnitude:</strong> <span id="magnitude">0</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>VectorCompression - A novel approach to information encoding</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
