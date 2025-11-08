@@ -108,7 +108,7 @@ function initScene() {
 
     // Scene
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf8f9fa);
+    scene.background = new THREE.Color(0xffffff);
 
     // Camera
     camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
@@ -137,16 +137,8 @@ function initScene() {
     directionalLight.castShadow = true;
     scene.add(directionalLight);
 
-    const pointLight1 = new THREE.PointLight(0x667eea, 0.5);
-    pointLight1.position.set(-20, 20, -20);
-    scene.add(pointLight1);
-
-    const pointLight2 = new THREE.PointLight(0x764ba2, 0.5);
-    pointLight2.position.set(20, -20, 20);
-    scene.add(pointLight2);
-
     // Grid
-    gridHelper = new THREE.GridHelper(100, 20, 0xcccccc, 0xe0e0e0);
+    gridHelper = new THREE.GridHelper(100, 20, 0x1a1a1a, 0xd0d0d0);
     scene.add(gridHelper);
 
     // Axes
@@ -283,12 +275,13 @@ async function visualizeWord(word) {
             await new Promise(resolve => setTimeout(resolve, 300));
 
             if (showIndividual) {
-                const color = `hsl(${(i / charVectors.length) * 280 + 200}, 70%, 60%)`;
+                const grayValue = Math.floor(100 + (i / charVectors.length) * 80);
+                const color = `hsl(0, 0%, ${grayValue}%)`;
                 const arrow = createVectorArrow(
                     charVectors[i].start,
                     charVectors[i].end,
                     color,
-                    0.6
+                    0.7
                 );
                 scene.add(arrow);
                 vectorObjects.push(arrow);
@@ -301,8 +294,9 @@ async function visualizeWord(word) {
     } else {
         charVectors.forEach((cv, i) => {
             if (showIndividual) {
-                const color = `hsl(${(i / charVectors.length) * 280 + 200}, 70%, 60%)`;
-                const arrow = createVectorArrow(cv.start, cv.end, color, 0.6);
+                const grayValue = Math.floor(100 + (i / charVectors.length) * 80);
+                const color = `hsl(0, 0%, ${grayValue}%)`;
+                const arrow = createVectorArrow(cv.start, cv.end, color, 0.7);
                 scene.add(arrow);
                 vectorObjects.push(arrow);
 
@@ -316,12 +310,12 @@ async function visualizeWord(word) {
     // Show resultant vector
     if (charVectors.length > 0) {
         const resultant = charVectors[charVectors.length - 1].end;
-        const resultantArrow = createVectorArrow([0, 0, 0], resultant, 0xff4757, 1);
+        const resultantArrow = createVectorArrow([0, 0, 0], resultant, 0x000000, 1);
         resultantArrow.line.material.linewidth = 3;
         scene.add(resultantArrow);
         vectorObjects.push(resultantArrow);
 
-        const resultantSphere = createSphere(resultant, 0xff4757, 0.8);
+        const resultantSphere = createSphere(resultant, 0x000000, 0.8);
         scene.add(resultantSphere);
         vectorObjects.push(resultantSphere);
 
