@@ -450,19 +450,39 @@ function autoFrameCamera(allWordVectors) {
     const sizeX = maxX - minX;
     const sizeY = maxY - minY;
     const sizeZ = maxZ - minZ;
-    const maxSize = Math.max(sizeX, sizeY, sizeZ);
 
-    // Calculate optimal camera distance
-    // Use field of view to determine how far back camera needs to be
+    // Calculate areas of the three planes
+    const areaXY = sizeX * sizeY; // Looking from Z axis
+    const areaXZ = sizeX * sizeZ; // Looking from Y axis
+    const areaYZ = sizeY * sizeZ; // Looking from X axis
+
+    // Find which plane has the largest area (most spread)
+    let cameraOffset = { x: 0, y: 0, z: 0 };
+    let maxDimension = 0;
+
+    if (areaXY >= areaXZ && areaXY >= areaYZ) {
+        // XY plane is largest - look from Z axis
+        maxDimension = Math.max(sizeX, sizeY);
+        cameraOffset = { x: 0, y: 0, z: 1 };
+    } else if (areaXZ >= areaXY && areaXZ >= areaYZ) {
+        // XZ plane is largest - look from Y axis
+        maxDimension = Math.max(sizeX, sizeZ);
+        cameraOffset = { x: 0, y: 1, z: 0 };
+    } else {
+        // YZ plane is largest - look from X axis
+        maxDimension = Math.max(sizeY, sizeZ);
+        cameraOffset = { x: 1, y: 0, z: 0 };
+    }
+
+    // Calculate optimal camera distance based on largest dimension
     const fov = camera.fov * (Math.PI / 180); // Convert to radians
-    const distance = maxSize / (2 * Math.tan(fov / 2)) * 1.5; // 1.5 for padding
+    const distance = (maxDimension / 2) / Math.tan(fov / 2) * 1.5; // 1.5 for padding
 
-    // Position camera at 45-degree angle from center
-    const angle = Math.PI / 4; // 45 degrees
+    // Position camera perpendicular to largest plane
     camera.position.set(
-        centerX + distance * Math.cos(angle),
-        centerY + distance * Math.sin(angle),
-        centerZ + distance
+        centerX + cameraOffset.x * distance,
+        centerY + cameraOffset.y * distance,
+        centerZ + cameraOffset.z * distance
     );
 
     // Point camera at center of bounding box
