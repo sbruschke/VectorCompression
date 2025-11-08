@@ -399,13 +399,75 @@ async function visualizeWord(input) {
             `[${resultant[0].toFixed(2)}, ${resultant[1].toFixed(2)}, ${resultant[2].toFixed(2)}]`;
         document.getElementById('magnitude').textContent = magnitude.toFixed(2);
 
-        // Focus camera on result
-        controls.target.set(resultant[0] / 2, resultant[1] / 2, resultant[2] / 2);
+        // Auto-frame camera to fit all vectors
+        autoFrameCamera(allWordVectors);
     }
 }
 
 function updateVectorInfo(html) {
     document.getElementById('vectorInfo').innerHTML = html;
+}
+
+// Auto-frame camera to fit all vectors in view
+function autoFrameCamera(allWordVectors) {
+    if (allWordVectors.length === 0) return;
+
+    // Calculate bounding box of all vectors
+    let minX = 0, minY = 0, minZ = 0;
+    let maxX = 0, maxY = 0, maxZ = 0;
+
+    // Include origin
+    minX = maxX = 0;
+    minY = maxY = 0;
+    minZ = maxZ = 0;
+
+    // Check all vector endpoints
+    allWordVectors.forEach(wordData => {
+        wordData.vectors.forEach(cv => {
+            minX = Math.min(minX, cv.start[0], cv.end[0]);
+            minY = Math.min(minY, cv.start[1], cv.end[1]);
+            minZ = Math.min(minZ, cv.start[2], cv.end[2]);
+            maxX = Math.max(maxX, cv.start[0], cv.end[0]);
+            maxY = Math.max(maxY, cv.start[1], cv.end[1]);
+            maxZ = Math.max(maxZ, cv.start[2], cv.end[2]);
+        });
+
+        // Include resultant endpoints
+        const resultant = wordData.resultant;
+        minX = Math.min(minX, resultant[0]);
+        minY = Math.min(minY, resultant[1]);
+        minZ = Math.min(minZ, resultant[2]);
+        maxX = Math.max(maxX, resultant[0]);
+        maxY = Math.max(maxY, resultant[1]);
+        maxZ = Math.max(maxZ, resultant[2]);
+    });
+
+    // Calculate center and size of bounding box
+    const centerX = (minX + maxX) / 2;
+    const centerY = (minY + maxY) / 2;
+    const centerZ = (minZ + maxZ) / 2;
+
+    const sizeX = maxX - minX;
+    const sizeY = maxY - minY;
+    const sizeZ = maxZ - minZ;
+    const maxSize = Math.max(sizeX, sizeY, sizeZ);
+
+    // Calculate optimal camera distance
+    // Use field of view to determine how far back camera needs to be
+    const fov = camera.fov * (Math.PI / 180); // Convert to radians
+    const distance = maxSize / (2 * Math.tan(fov / 2)) * 1.5; // 1.5 for padding
+
+    // Position camera at 45-degree angle from center
+    const angle = Math.PI / 4; // 45 degrees
+    camera.position.set(
+        centerX + distance * Math.cos(angle),
+        centerY + distance * Math.sin(angle),
+        centerZ + distance
+    );
+
+    // Point camera at center of bounding box
+    controls.target.set(centerX, centerY, centerZ);
+    controls.update();
 }
 
 // Event Listeners
